@@ -2,17 +2,209 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Bang Table</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Bang the Table</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      height: 100%;
+      background-color: black;
+      font-family: sans-serif;
+    }
+
+    .container {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      background: url('images/table.png') no-repeat center center;
+      background-size: cover;
+    }
+
+    .hand {
+      position: absolute;
+      width: 100px;
+      height: auto;
+      z-index: 10;
+      transition: transform 0.1s ease;
+      cursor: pointer;
+    }
+
+    .hand.left { left: 25%; top: 80%; }
+    .hand.right { right: 25%; top: 80%; }
+
+    .zone {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      width: 16.666%;
+      pointer-events: none;
+    }
+
+    .zone:nth-child(1) { left: 0%; }
+    .zone:nth-child(2) { left: 16.666%; }
+    .zone:nth-child(3) { left: 33.333%; }
+    .zone:nth-child(4) { left: 50%; }
+    .zone:nth-child(5) { left: 66.666%; }
+    .zone:nth-child(6) { left: 83.333%; }
+
+    .active {
+      outline: 3px solid yellow;
+    }
+
+    .select-toggle {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 6px 12px;
+      background-color: white;
+      color: black;
+      border-radius: 5px;
+      font-size: 14px;
+      z-index: 20;
+      cursor: pointer;
+      display: none;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <img src="table_web.png" class="table" />
-    <img src="hand_left_web.png" class="hand left" />
-    <img src="hand_right_web.png" class="hand right" />
+  <div class="container" id="table">
+    <div class="select-toggle" id="toggleSelect">Select Both Hands</div>
+    <img src="images/hand_left.png" class="hand left" id="leftHand" />
+    <img src="images/hand_right.png" class="hand right" id="rightHand" />
+
+    <!-- Zones for pitch detection -->
+    <div class="zone"></div>
+    <div class="zone"></div>
+    <div class="zone"></div>
+    <div class="zone"></div>
+    <div class="zone"></div>
+    <div class="zone"></div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/tone@next"></script>
-  <script src="script.js"></script>
+  <script>
+    const container = document.getElementById('table');
+    const leftHand = document.getElementById('leftHand');
+    const rightHand = document.getElementById('rightHand');
+    const toggleSelect = document.getElementById('toggleSelect');
+
+    let activeHands = [];
+    let bothHandsMode = false;
+    let handOffset = 200;
+
+    const defaultPositions = {
+      left: { top: '80%', left: '25%' },
+      right: { top: '80%', right: '25%' }
+    };
+
+    const bangSounds = [
+      new Audio('sounds/clunk.mp3'),
+      new Audio('sounds/deep_clunk.mp3'),
+      new Audio('sounds/key_clink.mp3'),
+      new Audio('sounds/light_tap.mp3'),
+      new Audio('sounds/slide.mp3'),
+      new Audio('sounds/solid_bang.mp3')
+    ];
+
+    function resetHandPosition(hand) {
+      if (hand.id === 'leftHand') {
+        hand.style.left = defaultPositions.left.left;
+        hand.style.top = defaultPositions.left.top;
+      } else if (hand.id === 'rightHand') {
+        hand.style.right = defaultPositions.right.right;
+        hand.style.left = '';
+        hand.style.top = defaultPositions.right.top;
+      }
+      hand.classList.remove("active");
+    }
+
+    function bothHandsAtRest() {
+      return leftHand.style.top === defaultPositions.left.top && rightHand.style.top === defaultPositions.right.top;
+    }
+
+    function activateHands(hands) {
+      activeHands = hands;
+      [leftHand, rightHand].forEach(h => h.classList.remove("active"));
+      hands.forEach(h => h.classList.add("active"));
+    }
+
+    toggleSelect.addEventListener('click', () => {
+      bothHandsMode = !bothHandsMode;
+      if (bothHandsMode) {
+        const leftRect = leftHand.getBoundingClientRect();
+        const rightRect = rightHand.getBoundingClientRect();
+        handOffset = rightRect.left - leftRect.left;
+        activateHands([leftHand]);
+        toggleSelect.textContent = 'Return to One Hand Play';
+      } else {
+        activateHands([]);
+        toggleSelect.textContent = 'Select Both Hands';
+      }
+    });
+
+    leftHand.addEventListener('mouseenter', () => {
+      if (!bothHandsMode) activateHands([leftHand]);
+    });
+
+    rightHand.addEventListener('mouseenter', () => {
+      if (!bothHandsMode) activateHands([rightHand]);
+    });
+
+    container.addEventListener('mousemove', (e) => {
+      const x = e.clientX;
+      const y = e.clientY;
+
+      if (y > window.innerHeight - 20) {
+        activeHands.forEach(hand => resetHandPosition(hand));
+        activeHands = [];
+        bothHandsMode = false;
+        toggleSelect.textContent = 'Select Both Hands';
+        toggleSelect.style.display = 'none';
+        return;
+      }
+
+      if (bothHandsAtRest()) {
+        toggleSelect.style.display = 'block';
+      } else {
+        toggleSelect.style.display = 'none';
+      }
+
+      if (bothHandsMode && activeHands.length === 1) {
+        const dx = x - 50;
+        const dy = y - 75;
+        leftHand.style.left = `${dx}px`;
+        leftHand.style.top = `${dy}px`;
+        rightHand.style.left = `${dx + handOffset}px`;
+        rightHand.style.top = `${dy}px`;
+      } else {
+        activeHands.forEach(hand => {
+          hand.style.left = `${x - 50}px`;
+          hand.style.top = `${y - 75}px`;
+        });
+      }
+    });
+
+    function getBangSound(x) {
+      const width = container.offsetWidth;
+      const index = Math.floor((x / width) * 6);
+      return bangSounds[index] || bangSounds[2];
+    }
+
+    container.addEventListener('click', (e) => {
+      let handsToPlay = bothHandsMode ? [leftHand, rightHand] : activeHands;
+
+      handsToPlay.forEach(hand => {
+        const rect = hand.getBoundingClientRect();
+        const sound = getBangSound(rect.left + rect.width / 2);
+        hand.style.transform = 'scaleY(0.7)';
+        sound.currentTime = 0;
+        sound.play();
+        setTimeout(() => {
+          hand.style.transform = 'scaleY(1)';
+        }, 100);
+      });
+    });
+  </script>
 </body>
 </html>
