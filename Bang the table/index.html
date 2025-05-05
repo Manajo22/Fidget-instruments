@@ -15,23 +15,26 @@
 
     .container {
       position: relative;
-      width: 100%;
-      height: 100vh;
+      width: 80%;
+      height: 90vh;
+      margin: auto;
       background: url('images/table.png') no-repeat center center;
       background-size: cover;
+      border: 4px solid #333;
     }
 
     .hand {
       position: absolute;
-      width: 100px;
+      width: 160px;
       height: auto;
       z-index: 10;
       transition: transform 0.1s ease;
       cursor: pointer;
+      transform-origin: bottom center;
     }
 
-    .hand.left { left: 25%; top: 80%; }
-    .hand.right { right: 25%; top: 80%; }
+    .hand.left { left: 20%; top: 80%; }
+    .hand.right { left: 60%; top: 80%; }
 
     .zone {
       position: absolute;
@@ -94,8 +97,8 @@
     let handOffset = 200;
 
     const defaultPositions = {
-      left: { top: '80%', left: '25%' },
-      right: { top: '80%', right: '25%' }
+      left: { top: '80%', left: '20%' },
+      right: { top: '80%', left: '60%' }
     };
 
     const bangSounds = [
@@ -106,16 +109,12 @@
       new Audio('sounds/slide.mp3'),
       new Audio('sounds/solid_bang.mp3')
     ];
+    bangSounds.forEach(sound => sound.load());
 
     function resetHandPosition(hand) {
-      if (hand.id === 'leftHand') {
-        hand.style.left = defaultPositions.left.left;
-        hand.style.top = defaultPositions.left.top;
-      } else if (hand.id === 'rightHand') {
-        hand.style.right = defaultPositions.right.right;
-        hand.style.left = '';
-        hand.style.top = defaultPositions.right.top;
-      }
+      hand.style.left = defaultPositions[hand.id === 'leftHand' ? 'left' : 'right'].left;
+      hand.style.top = defaultPositions[hand.id === 'leftHand' ? 'left' : 'right'].top;
+      hand.style.transform = 'rotate(0deg)';
       hand.classList.remove("active");
     }
 
@@ -156,7 +155,7 @@
       const y = e.clientY;
 
       if (y > window.innerHeight - 20) {
-        activeHands.forEach(hand => resetHandPosition(hand));
+        activeHands.forEach(resetHandPosition);
         activeHands = [];
         bothHandsMode = false;
         toggleSelect.textContent = 'Select Both Hands';
@@ -164,23 +163,25 @@
         return;
       }
 
-      if (bothHandsAtRest()) {
-        toggleSelect.style.display = 'block';
-      } else {
-        toggleSelect.style.display = 'none';
-      }
+      toggleSelect.style.display = bothHandsAtRest() ? 'block' : 'none';
 
       if (bothHandsMode && activeHands.length === 1) {
-        const dx = x - 50;
+        const dx = x - 80;
         const dy = y - 75;
         leftHand.style.left = `${dx}px`;
         leftHand.style.top = `${dy}px`;
+        leftHand.style.transform = `rotate(${(dx - window.innerWidth / 2) / 15}deg)`;
+
         rightHand.style.left = `${dx + handOffset}px`;
         rightHand.style.top = `${dy}px`;
+        rightHand.style.transform = `rotate(${(dx + handOffset - window.innerWidth / 2) / 15}deg)`;
       } else {
         activeHands.forEach(hand => {
-          hand.style.left = `${x - 50}px`;
-          hand.style.top = `${y - 75}px`;
+          const dx = x - 80;
+          const dy = y - 75;
+          hand.style.left = `${dx}px`;
+          hand.style.top = `${dy}px`;
+          hand.style.transform = `rotate(${(dx - window.innerWidth / 2) / 15}deg)`;
         });
       }
     });
@@ -192,16 +193,15 @@
     }
 
     container.addEventListener('click', (e) => {
-      let handsToPlay = bothHandsMode ? [leftHand, rightHand] : activeHands;
-
+      const handsToPlay = bothHandsMode ? [leftHand, rightHand] : activeHands;
       handsToPlay.forEach(hand => {
         const rect = hand.getBoundingClientRect();
         const sound = getBangSound(rect.left + rect.width / 2);
-        hand.style.transform = 'scaleY(0.7)';
+        hand.style.transform += ' scaleY(0.7)';
         sound.currentTime = 0;
         sound.play();
         setTimeout(() => {
-          hand.style.transform = 'scaleY(1)';
+          hand.style.transform = hand.style.transform.replace(' scaleY(0.7)', '');
         }, 100);
       });
     });
