@@ -2,39 +2,75 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bang the Table</title>
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      overflow: hidden;
       height: 100%;
-      background-color: black;
-      font-family: sans-serif;
+      scroll-behavior: smooth;
+     
+    }
+    @font-face {
+  font-family: "CLT Apfel Grotezk";
+  src: url("CLT Apfel Grotezk/web/ApfelGrotezk-Regular.woff2") format("woff2");
+
+}
+
+
+    .intro {
+      height: 100vh;
+      width: 100vw;
+      background: #000;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .intro h1 {
+      font-family: "CLT Apfel Grotezk";
+      font-size: 3vw;
+      margin-bottom: 20px;
+    }
+
+    .arrow {
+      font-size: 3vw;
+      cursor: pointer;
+      margin-top: 40px;
+      animation: bounce 1.2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(15px); }
     }
 
     .container {
       position: relative;
-      width: 80%;
-      height: 90vh;
-      margin: auto;
+      width: 100vw;
+      height: 100vh;
       background: url('images/table.png') no-repeat center center;
       background-size: cover;
-      border: 4px solid #333;
+      border: 4px solid #ffffff;
     }
 
     .hand {
       position: absolute;
-      width: 160px;
-      height: auto;
+      height: 90vh;
       z-index: 10;
       transition: transform 0.1s ease;
       cursor: pointer;
       transform-origin: bottom center;
+      pointer-events: auto;
+      bottom: 0;
     }
 
-    .hand.left { left: 20%; top: 80%; }
-    .hand.right { left: 60%; top: 80%; }
+    .hand.left { left: 5vw; }
+    .hand.right { right: 5vw; }
 
     .zone {
       position: absolute;
@@ -51,27 +87,55 @@
     .zone:nth-child(5) { left: 66.666%; }
     .zone:nth-child(6) { left: 83.333%; }
 
-    .active {
-      outline: 3px solid yellow;
-    }
-
     .select-toggle {
       position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 6px 12px;
-      background-color: white;
-      color: black;
-      border-radius: 5px;
-      font-size: 14px;
+      top: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      background: linear-gradient(90deg, #ff179e, #9855fe,#45a0fc);
+      color: #000000;
+      border: none;
+      border-radius: 20px;
+      font-family: "CLT Apfel Grotezk";
+      font-weight: bold;
+      box-shadow: 0 4px 10px rgb(255, 237, 105);
       z-index: 20;
       cursor: pointer;
-      display: none;
+      display: block;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .select-toggle:hover {
+      background-color: #ff1a89;
+      transform: scale(1.05);
+      background: linear-gradient(90deg, #c1ff3c, #55fef8,#45a0fc);
+    }
+
+    .bang-circle {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background-color: rgba(0, 0, 0, 0.1);
+      transform: scale(0);
+      animation: bangAnim 0.4s ease-in-out forwards;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    @keyframes bangAnim {
+      0% { transform: scale(0); opacity: 0.8; }
+      50% { transform: scale(1.3); opacity: 0.5; }
+      100% { transform: scale(1.5); opacity: 0; }
     }
   </style>
 </head>
 <body>
+  <section class="intro">
+    <h1>Walk over to the table.<br>Let's create some music.</h1>
+    <div class="arrow" onclick="document.getElementById('table').scrollIntoView({ behavior: 'smooth' });">⬇️</div>
+  </section>
+
   <div class="container" id="table">
     <div class="select-toggle" id="toggleSelect">Select Both Hands</div>
     <img src="images/hand_left.png" class="hand left" id="leftHand" />
@@ -97,8 +161,8 @@
     let handOffset = 200;
 
     const defaultPositions = {
-      left: { top: '80%', left: '20%' },
-      right: { top: '80%', left: '60%' }
+      left: { bottom: '0', left: '5vw', transform: 'rotate(0deg)' },
+      right: { bottom: '0', right: '5vw', transform: 'rotate(0deg)' }
     };
 
     const bangSounds = [
@@ -112,30 +176,36 @@
     bangSounds.forEach(sound => sound.load());
 
     function resetHandPosition(hand) {
-      hand.style.left = defaultPositions[hand.id === 'leftHand' ? 'left' : 'right'].left;
-      hand.style.top = defaultPositions[hand.id === 'leftHand' ? 'left' : 'right'].top;
+      hand.style.bottom = '0';
       hand.style.transform = 'rotate(0deg)';
+      if (hand.id === 'leftHand') {
+        hand.style.left = defaultPositions.left.left;
+      } else {
+        hand.style.right = defaultPositions.right.right;
+        hand.style.left = '';
+      }
       hand.classList.remove("active");
     }
 
     function bothHandsAtRest() {
-      return leftHand.style.top === defaultPositions.left.top && rightHand.style.top === defaultPositions.right.top;
+      return parseFloat(getComputedStyle(leftHand).bottom) === 0 &&
+             parseFloat(getComputedStyle(rightHand).bottom) === 0;
     }
 
     function activateHands(hands) {
       activeHands = hands;
-      [leftHand, rightHand].forEach(h => h.classList.remove("active"));
-      hands.forEach(h => h.classList.add("active"));
     }
 
     toggleSelect.addEventListener('click', () => {
       bothHandsMode = !bothHandsMode;
+      resetHandPosition(leftHand);
+      resetHandPosition(rightHand);
       if (bothHandsMode) {
         const leftRect = leftHand.getBoundingClientRect();
         const rightRect = rightHand.getBoundingClientRect();
         handOffset = rightRect.left - leftRect.left;
         activateHands([leftHand]);
-        toggleSelect.textContent = 'Return to One Hand Play';
+        toggleSelect.textContent = 'Return to One Hand';
       } else {
         activateHands([]);
         toggleSelect.textContent = 'Select Both Hands';
@@ -150,6 +220,14 @@
       if (!bothHandsMode) activateHands([rightHand]);
     });
 
+    leftHand.addEventListener('mouseleave', () => {
+      if (!bothHandsMode) resetHandPosition(leftHand);
+    });
+
+    rightHand.addEventListener('mouseleave', () => {
+      if (!bothHandsMode) resetHandPosition(rightHand);
+    });
+
     container.addEventListener('mousemove', (e) => {
       const x = e.clientX;
       const y = e.clientY;
@@ -159,29 +237,30 @@
         activeHands = [];
         bothHandsMode = false;
         toggleSelect.textContent = 'Select Both Hands';
-        toggleSelect.style.display = 'none';
         return;
       }
 
-      toggleSelect.style.display = bothHandsAtRest() ? 'block' : 'none';
+      const baseRotate = (x - window.innerWidth / 2) / 20;
+      const handHeight = leftHand.offsetHeight;
+      const containerBottom = container.getBoundingClientRect().bottom;
 
       if (bothHandsMode && activeHands.length === 1) {
-        const dx = x - 80;
-        const dy = y - 75;
+        const dx = x - handHeight / 2;
+        const dy = containerBottom - y - handHeight / 2;
         leftHand.style.left = `${dx}px`;
-        leftHand.style.top = `${dy}px`;
-        leftHand.style.transform = `rotate(${(dx - window.innerWidth / 2) / 15}deg)`;
+        leftHand.style.bottom = `${dy}px`;
+        leftHand.style.transform = `rotate(${baseRotate}deg)`;
 
         rightHand.style.left = `${dx + handOffset}px`;
-        rightHand.style.top = `${dy}px`;
-        rightHand.style.transform = `rotate(${(dx + handOffset - window.innerWidth / 2) / 15}deg)`;
+        rightHand.style.bottom = `${dy}px`;
+        rightHand.style.transform = `rotate(${baseRotate}deg)`;
       } else {
         activeHands.forEach(hand => {
-          const dx = x - 80;
-          const dy = y - 75;
+          const dx = x - handHeight / 2;
+          const dy = containerBottom - y - handHeight / 2;
           hand.style.left = `${dx}px`;
-          hand.style.top = `${dy}px`;
-          hand.style.transform = `rotate(${(dx - window.innerWidth / 2) / 15}deg)`;
+          hand.style.bottom = `${dy}px`;
+          hand.style.transform = `rotate(${baseRotate}deg)`;
         });
       }
     });
@@ -192,6 +271,15 @@
       return bangSounds[index] || bangSounds[2];
     }
 
+    function showBangCircle(x, y) {
+      const circle = document.createElement('div');
+      circle.className = 'bang-circle';
+      circle.style.left = `${x - 50}px`;
+      circle.style.top = `${y - 50}px`;
+      container.appendChild(circle);
+      setTimeout(() => container.removeChild(circle), 400);
+    }
+
     container.addEventListener('click', (e) => {
       const handsToPlay = bothHandsMode ? [leftHand, rightHand] : activeHands;
       handsToPlay.forEach(hand => {
@@ -200,6 +288,7 @@
         hand.style.transform += ' scaleY(0.7)';
         sound.currentTime = 0;
         sound.play();
+        showBangCircle(rect.left + rect.width / 2, rect.top + rect.height / 2);
         setTimeout(() => {
           hand.style.transform = hand.style.transform.replace(' scaleY(0.7)', '');
         }, 100);
