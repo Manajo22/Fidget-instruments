@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Interactive Projects</title>
+  <style>
+     @font-face {
+  font-family: "CLT Apfel Grotezk";
+  src: url("CLT Apfel Grotezk/web/ApfelGrotezk-Regular.woff2") format("woff2");
+
+}
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #fff8f0;
+      font-family: "CLT Apfel Grotezk";
+      color: #333;
+      padding: 2rem;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 3rem;
+      margin-bottom: 2rem;
+      color: #ff6f61;
+    }
+
+    .project-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+    }
+
+    .project-card {
+      background: white;
+      width: 280px;
+      padding: 2rem;
+      border-radius: 2rem;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: transform 0.2s ease;
+      cursor: pointer;
+      border: 4px solid transparent;
+    }
+
+    .project-card:hover {
+      transform: scale(1.03);
+      border-color: #ffe08a;
+    }
+
+    .project-card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: #2d3436;
+    }
+
+    .project-card p {
+      font-size: 1rem;
+      color: #555;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Fidget instruments</h1>
+
+  <div class="project-grid">
+    <a href="Colour scratcher/index.html">
+      <div class="project-card" style="background:#ffd6e0;">
+        <h2>Scratch the Colour</h2>
+        <p>Paint the world with sound and scratch it to reveal music.</p>
+      </div>
+    </a>
+
+    <a href="Bang the Table/index.html">
+      <div class="project-card" style="background:#d0f4de;">
+        <h2>Bang the Table</h2>
+        <p>Smash and tap to make beats on your screen.</p>
+      </div>
+    </a>
+
+    <a href="pen clicker/index.html">
+      <div class="project-card" style="background:#ffeaa7;">
+        <h2>Click the Pens</h2>
+        <p>Click the pens for satisfying sounds and rhythm.</p>
+      </div>
+    </a>
+  </div>
+
+ 
+
+</body>
+</html>

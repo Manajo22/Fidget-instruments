@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Horizontal Zipper Interaction</title>
+  <style>
+    body {
+      margin: 0;
+      background: #eee;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-family: sans-serif;
+      overflow: hidden;
+    }
+    #zipper-wrapper {
+      position: relative;
+      width: 1000px;
+      height: 150px;
+    }
+    #closed-zip, #open-zip {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    #open-zip {
+      clip-path: inset(0 100% 0 0);
+      z-index: 1;
+    }
+    #closed-zip {
+      z-index: 0;
+    }
+    #zipper-handle {
+      position: absolute;
+      top: px;
+      left: 0;
+      width: 150px;
+      height: 170px;
+      background: url('zipper png.png') center/contain no-repeat;
+      background-size: contain;
+      z-index: 2;
+      cursor: grab;
+    }
+  </style>
+</head>
+<body>
+  <div id="zipper-wrapper">
+    <img src="open edit.png" id="closed-zip">
+    <img src="closed edit.png" id="open-zip">
+    <div id="zipper-handle"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/tone@14.8.39/build/Tone.min.js"></script>
+  <script>
+    const handle = document.getElementById('zipper-handle');
+    const openZip = document.getElementById('open-zip');
+    const wrapper = document.getElementById('zipper-wrapper');
+
+    let dragging = false;
+    let startX;
+    let startLeft;
+    let player;
+
+    async function loadSound() {
+      await Tone.start();
+      player = new Tone.Player({
+        url: 'https://cdn.pixabay.com/audio/2022/03/11/audio_3d0c959b6d.mp3',
+        loop: false,
+        volume: -5
+      }).toDestination();
+      await player.load();
+    }
+    loadSound();
+
+    handle.addEventListener('mousedown', (e) => {
+      dragging = true;
+      startX = e.clientX;
+      startLeft = handle.offsetLeft;
+      Tone.start();
+      if (player && player.state !== 'started') player.start();
+    });
+
+    document.addEventListener('mouseup', () => dragging = false);
+    document.addEventListener('mousemove', (e) => {
+      if (!dragging) return;
+      let deltaX = e.clientX - startX;
+      let newLeft = Math.min(wrapper.clientWidth - handle.clientWidth, Math.max(0, startLeft + deltaX));
+      handle.style.left = newLeft + 'px';
+
+      let percentage = newLeft / (wrapper.clientWidth - handle.clientWidth);
+      let clipRight = 100 - (percentage * 100);
+      openZip.style.clipPath = `inset(0 ${clipRight}% 0 0)`;
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Color Scratch Piano</title>
+  <script src="https://cdn.jsdelivr.net/npm/tone@14.8.39/build/Tone.min.js"></script>
+  <style>
+    @font-face {
+  font-family: "CLT Apfel Grotezk";
+  src: url("CLT Apfel Grotezk/web/ApfelGrotezk-Regular.woff2") format("woff2");
+
+}
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: white;
+      height: 100%;
+      font-family: "CLT Apfel Grotezk";
+      
+    }
+    #title {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      font-family: "CLT Apfel Grotezk";
+      font-size: 40px;
+      font-weight: bold;
+      color: black;
+      background: rgba(255,255,255,0.9);
+      padding: 5px 10px;
+      border-radius: 6px;
+    }
+    #prompt {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255,255,255,0.95);
+  padding: 15px 30px;
+  border-radius: 8px;
+  font-size: 22px;
+  font-weight: bold;
+  font-family: "CLT Apfel Grotezk";
+  z-index: 20;
+  animation: fadeOut 3s 2s forwards;
+}
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+    canvas {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+    #controls {
+      position: fixed;
+      top: 60px;
+      left: 10px;
+      z-index: 9;
+      background: rgba(255,255,255,0.8);
+      padding: 10px;
+      border-radius: 8px;
+    }
+    #brushCursor {
+  position: fixed;
+  width: 40px;
+  height: 40px;
+  pointer-events: none;
+  z-index: 11;
+  transition: top 0.01s linear, left 0.01s linear;
+}
+    .btn {
+      padding: 10px 15px;
+      margin: 5px 5px 0 0;
+      border: 1px;
+      cursor: pointer;
+      color: white;
+      font-family: "CLT Apfel Grotezk";
+      font-weight: bold;
+      border-radius: 5px;
+    }
+    .pink { background-color: rgb(255, 0, 221); }
+    .purple { background-color: rgb(92, 0, 157); }
+    .yellow { background-color: rgb(255, 187, 0);  }
+    .orange { background-color: rgb(255, 77, 0);  }
+    .blue { background-color: rgb(125, 244, 255); }
+    .hidden { display: none; }
+
+    .btn {
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+.btn:hover {
+  transform: scale(1.1);
+  filter: brightness(1.2);
+  border-radius: 40px;
+}
+
+    #scratcherNote {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      color: black;
+      z-index: 10;
+      font-family: "CLT Apfel Grotezk";
+      font-weight: bold;
+      background: rgba(255,255,255,0.8);
+      padding: 5px 10px;
+      border-radius: 5px;
+    }
+    #resetBtn {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: gray;
+      color: white;
+      z-index: 10;
+      display: none;
+      padding: 10px 15px;
+      font-family: "CLT Apfel Grotezk";
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+    #overlayControl {
+  position: fixed;
+  top: 60px;
+  right: 10px;
+  z-index: 9;
+  /*background: rgba(255, 255, 255, 0.8);*/
+  padding: 10px;
+  border-radius: 8px;
+}
+.black {
+  background-color: black;
+}
+  </style>
+</head>
+<body>
+
+  <div id="prompt">Start colouring!</div>
+
+  <div id="title">Color Scratch Piano</div>
+  <div id="scratcherNote"></div>
+  <div id="controls">
+    <button class="btn pink" onclick="setColor('rgb(255, 0, 221)')">Pink</button>
+    <button class="btn purple" onclick="setColor('rgb(92, 0, 157)')">Purple</button>
+    <button class="btn yellow" onclick="setColor('rgb(255, 187, 0)')">Yellow</button>
+    <button class="btn orange" onclick="setColor('rgb(255, 77, 0)')">Orange</button>
+    <button class="btn blue" onclick="setColor('rgb(125, 244, 255)')">Blue</button>
+   
+  </div>
+
+  <div id="overlayControl">
+    <button class="btn black" onclick="addOverlay()">Overlay</button>
+  </div>
+  <button class="btn" id="resetBtn" onclick="resetCanvas()">Reset</button>
+  <canvas id="colorCanvas"></canvas>
+  <canvas id="overlayCanvas" class="hidden"></canvas>
+  <img src="brush.png" id="brushCursor" style="display: block;" />
+
+  <script>
+    const colorCanvas = document.getElementById('colorCanvas');
+    const overlayCanvas = document.getElementById('overlayCanvas');
+    const ctx = colorCanvas.getContext('2d');
+    const octx = overlayCanvas.getContext('2d');
+
+    colorCanvas.width = overlayCanvas.width = window.innerWidth;
+    colorCanvas.height = overlayCanvas.height = window.innerHeight;
+
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, colorCanvas.width, colorCanvas.height);
+
+    let painting = false;
+    let currentColor = 'rgb(255, 0, 221)';
+    let isScratching = false;
+
+    const synth = new Tone.AMSynth().toDestination();
+
+    const colorNotes = {
+      pink: "C4",
+      purple: "D4",
+      yellow: "E4",
+      orange: "F4",
+      blue: "G4"
+    };
+
+    function setColor(color) {
+      currentColor = color;
+    }
+
+    function addOverlay() {
+  overlayCanvas.classList.remove('hidden');
+  document.getElementById('controls').style.display = 'none';
+  document.getElementById('overlayControl').style.display = 'none'; // ⬅ Hide the overlay button
+  document.getElementById('resetBtn').style.display = 'inline-block';
+  octx.fillStyle = 'black';
+  octx.fillRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+  isScratching = true;
+}
+
+    function resetCanvas() {
+      ctx.clearRect(0, 0, colorCanvas.width, colorCanvas.height);
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, colorCanvas.width, colorCanvas.height);
+      octx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+      overlayCanvas.classList.add('hidden');
+      document.getElementById('controls').style.display = 'block';
+      document.getElementById('overlayControl').style.display = 'block';
+      document.getElementById('resetBtn').style.display = 'none';
+      isScratching = false;
+    }
+
+    function getColorAtPixel(x, y) {
+  const pixel = ctx.getImageData(x, y, 1, 1).data;
+  const r = pixel[0], g = pixel[1], b = pixel[2];
+  if (r === 255 && g === 0 && b === 221) return 'pink';
+  if (r === 92 && g === 0 && b === 157) return 'purple';
+  if (r === 255 && g === 187 && b === 0) return 'yellow';
+  if (r === 255 && g === 77 && b === 0) return 'orange';
+  if (r === 125 && g === 244 && b === 255) return 'blue';
+  return null;
+}
+
+
+    function playNote(colorName) {
+      const note = colorNotes[colorName];
+      if (note) {
+        Tone.start();
+        synth.triggerAttackRelease(note, "8n");
+        document.getElementById('scratcherNote').innerText = colorName.toUpperCase();
+        setTimeout(() => document.getElementById('scratcherNote').innerText = '', 1000);
+      }
+    }
+
+    function draw(x, y) {
+      if (!painting) return;
+
+      if (!isScratching) {
+        ctx.lineTo(x, y);
+        ctx.strokeStyle = currentColor;
+        ctx.lineWidth = 20;
+        ctx.lineCap = "round";
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+      } else {
+        octx.save();
+        octx.globalCompositeOperation = 'destination-out';
+        octx.beginPath();
+        octx.arc(x, y, 25, 0, Math.PI * 2, false);
+        octx.fill();
+        octx.restore();
+
+        const colorName = getColorAtPixel(x, y);
+        if (colorName) playNote(colorName);
+      }
+    }
+
+    function startDraw(e) {
+      painting = true;
+      ctx.beginPath();
+      ctx.moveTo(e.clientX, e.clientY);
+      draw(e.clientX, e.clientY);
+    }
+
+    function endDraw() {
+      painting = false;
+      ctx.beginPath();
+    }
+
+    function moveDraw(e) {
+      if (!painting) return;
+      draw(e.clientX, e.clientY);
+    }
+
+    window.addEventListener('mousedown', startDraw);
+    window.addEventListener('mouseup', endDraw);
+    window.addEventListener('mousemove', moveDraw);
+
+    window.addEventListener('touchstart', (e) => startDraw(e.touches[0]));
+    window.addEventListener('touchend', endDraw);
+    window.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      moveDraw(e.touches[0]);
+    }, { passive: false });
+
+    const brushCursor = document.getElementById("brushCursor");
+
+    window.addEventListener("mousemove", (e) => {
+  if (isScratching) {
+    brushCursor.style.display = "none";
+    return;
+  }
+  brushCursor.style.display = "block";
+  brushCursor.style.left = `${e.clientX}px`;
+  brushCursor.style.top = `${e.clientY}px`;
+});
+  </script>
+</body>
+</html>
