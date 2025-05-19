@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>Pen Clicker</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: "CLT Apfel Grotezk", sans-serif;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: repeating-linear-gradient(
+        to bottom,
+        white,
+        white 38px,
+        #89CFF0 38px,
+        #89CFF0 40px
+      );
+    }
+
+    @font-face {
+      font-family: "CLT Apfel Grotezk";
+      src: url("CLT Apfel Grotezk/web/ApfelGrotezk-Regular.woff2") format("woff2");
+    }
+
+    h1 {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  text-align: center;
+  font-size: 3rem;
+  font-weight: bold;
+  padding: 1rem;
+  margin: 0;
+  z-index: 1001;
+  color: #333;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+
+    .pen {
+      position: absolute;
+      width: 12vw; /* smaller pens */
+      max-width: 90px;
+      height: auto;
+      cursor: pointer;
+      user-select: none;
+      filter: drop-shadow(3px 3px 8px rgba(0,0,0,0.4));
+      transition: transform 0.2s ease;
+    }
+
+    #throw-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 1rem 2rem;
+  font-family: "CLT Apfel Grotezk";
+  font-size: 2rem;
+  background: linear-gradient(90deg, #ff179e, #9855fe, #45a0fc);
+  color: white;
+  border: none;
+  border-radius: 80px;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease;
+}
+
+
+    #throw-btn:hover {
+    
+      background: linear-gradient(90deg, #c1ff3c, #55fef8, #45a0fc);
+      color: black;
+ }
+
+#index-btn {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #333;
+  color: white;
+  text-decoration: none;
+  border-radius: 10px;
+  font-family: "CLT Apfel Grotezk";
+  z-index: 1002;
+  font-size: 1rem;
+  box-shadow: 1px 1px 5px rgba(0,0,0,0.2);
+  transition: background-color 0.2s ease;
+}
+
+#index-btn:hover {
+  background-color: #666;
+}
+
+    @media (max-width: 768px) {
+      .pen {
+        width: 10vw;
+      }
+
+      #throw-btn {
+        font-size: 1.2rem;
+        padding: 0.8rem 1.5rem;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+        padding: 0.7rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .pen {
+        width: 22vw;
+      }
+
+      #throw-btn {
+        font-size: 1rem;
+        padding: 0.6rem 1rem;
+      }
+
+      h1 {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+  <script src="https://unpkg.com/tone/build/Tone.js"></script>
+</head>
+<body>
+  <h1>Click the Pens!</h1>
+  <a href="../Home page/index.html" id="index-btn">Index</a>
+
+  <button id="throw-btn">Throw!</button>
+  <img src="pen-static-1.png" class="pen" data-id="1" />
+  <img src="pen-static-2.png" class="pen" data-id="2" />
+  <img src="pen-static-3.png" class="pen" data-id="3" />
+  <img src="pen-static-4.png" class="pen" data-id="4" />
+  <img src="pen-static-5.png" class="pen" data-id="5" />
+  <img src="pen-static-6.png" class="pen" data-id="6" />
+  <img src="pen-static-7.png" class="pen" data-id="7" />
+
+  <script>
+    const pens = document.querySelectorAll('.pen');
+    const pitches = [0.20, 1.5, 3.1, 5.3, 7.3, 8.7, 10.3];
+    const buffers = { in: null, out: null };
+
+    async function loadBuffers() {
+      const inRes = await fetch('click-in.mp3');
+      const inData = await inRes.arrayBuffer();
+      buffers.in = await Tone.context.decodeAudioData(inData);
+
+      const outRes = await fetch('click-out.mp3');
+      const outData = await outRes.arrayBuffer();
+      buffers.out = await Tone.context.decodeAudioData(outData);
+    }
+
+    loadBuffers();
+
+    pens.forEach((pen, i) => {
+      let clicked = false;
+      const id = pen.dataset.id;
+
+     pen.addEventListener('click', async () => {
+        await Tone.start();
+        clicked = !clicked;
+        pen.src = clicked ? `pen-click-${id}.png` : `pen-static-${id}.png`;
+
+        const buffer = clicked ? buffers.in : buffers.out;
+        if (buffer) {
+          const player = new Tone.Player({
+            url: buffer,
+            autostart: true
+          }).toDestination();
+          
+          player.playbackRate = pitches[i];
+          player.start();
+        }
+      });
+    });
+
+    document.getElementById("throw-btn").addEventListener("click", () => {
+      pens.forEach(pen => {
+        const maxX = window.innerWidth - pen.offsetWidth;
+        const maxY = window.innerHeight - pen.offsetHeight;
+        const randX = Math.random() * maxX;
+        const randY = Math.random() * maxY;
+        const rotation = Math.random() * 360;
+        pen.style.left = `${randX}px`;
+        pen.style.top = `${randY}px`;
+        pen.style.transform = `rotate(${rotation}deg)`;
+      });
+    });
+  </script>
+</body>
+</html>
