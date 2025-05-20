@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>Pen Clicker</title>
+  <title>the pens are listening</title>
   <style>
     html, body {
       margin: 0;
@@ -31,14 +31,26 @@
   top: 0;
   background: #fff;
   text-align: center;
-  font-size: 3rem;
+  font-size: 2rem;
   font-weight: bold;
   padding: 1rem;
   margin: 0;
   z-index: 1001;
   color: #333;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+   animation: floatTitle 4s ease-in-out infinite;
+  transition: transform 0.3s ease;
 }
+
+@keyframes floatTitle {
+  0%, 100% {
+    transform: translateY(7px);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
 
 
     .pen {
@@ -61,7 +73,7 @@
   font-family: "CLT Apfel Grotezk";
   font-size: 2rem;
   background: linear-gradient(90deg, #ff179e, #9855fe, #45a0fc);
-  color: white;
+  color: rgb(0, 0, 0);
   border: none;
   border-radius: 80px;
   cursor: pointer;
@@ -74,7 +86,7 @@
     #throw-btn:hover {
     
       background: linear-gradient(90deg, #c1ff3c, #55fef8, #45a0fc);
-      color: black;
+      color: rgb(255, 255, 255);
  }
 
 #index-btn {
@@ -82,21 +94,47 @@
   top: 1rem;
   left: 1rem;
   padding: 0.5rem 1rem;
-  background-color: #333;
+  background-color: #000000;
   color: white;
   text-decoration: none;
   border-radius: 10px;
   font-family: "CLT Apfel Grotezk";
   z-index: 1002;
   font-size: 1rem;
-  box-shadow: 1px 1px 5px rgba(0,0,0,0.2);
+  box-shadow: 2px 2px 2px  #ff179e;
   transition: background-color 0.2s ease;
+   
 }
 
 #index-btn:hover {
-  background-color: #666;
+ 
+  background: linear-gradient( 90deg,#ff179e, #9855fe, #45a0fc);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+                
 }
-
+ 
+#prompt {
+  position: fixed;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255,255,255,0.95);
+  padding: 1rem 2rem;
+  border-radius: 20px;
+  font-size: 1.5vw;
+  font-weight: bold;
+  z-index: 20;
+  animation: fadeOut 2s 3s forwards;
+  text-align: center;
+}
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
     @media (max-width: 768px) {
       .pen {
         width: 10vw;
@@ -118,6 +156,10 @@
         width: 22vw;
       }
 
+       #prompt {
+    font-size: 5vw;
+    padding: 1rem;
+  }
       #throw-btn {
         font-size: 1rem;
         padding: 0.6rem 1rem;
@@ -131,8 +173,9 @@
   <script src="https://unpkg.com/tone/build/Tone.js"></script>
 </head>
 <body>
-  <h1>Click the Pens!</h1>
-  <a href="../Home page/index.html" id="index-btn">Index</a>
+  <h1>pens that speak.</h1>
+   <div id="prompt">Throw the pens,<br>their clicks might <br>crib louder than words.</div>
+  <a href="../Home page/index.html" id="index-btn">Home</a>
 
   <button id="throw-btn">Throw!</button>
   <img src="pen-static-1.png" class="pen" data-id="1" />
