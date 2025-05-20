@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>your surroundings are recording.</title>
+  <style>
+    @font-face {
+      font-family: "CLT Apfel Grotezk";
+      src: url("CLT Apfel Grotezk/web/ApfelGrotezk-Regular.woff2") format("woff2");
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #ffffff;
+      font-family: "CLT Apfel Grotezk", sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      position: relative;
+      user-select: none;
+    }
+
+    #animatedTitle {
+      text-align: center;
+      font-size: 5rem;
+      line-height: 1; /* Tight leading */
+      z-index: 2;
+      position: relative;
+      margin-bottom: 1rem;
+    }
+
+    #animatedTitle div {
+      margin: 0.1em 0;
+    }
+
+    #animatedTitle span {
+      display: inline-block;
+      font-weight: bold;
+      color: black;
+      animation: float-blur 3s infinite ease-in-out;
+      animation-delay: calc(var(--delay) * 1s);
+      transition: color 0.4s ease, filter 0.4s ease, transform 0.4s ease;
+    }
+
+    @keyframes float-blur {
+      0%, 100% {
+        transform: translateY(0);
+        filter: blur(0px);
+      }
+      50% {
+        transform: translateY(-3px);
+        filter: blur(1px);
+      }
+    }
+
+    #description {
+      font-size: 1rem;
+      color: #666;
+      margin-top: 0.25rem;
+      z-index: 2;
+      text-align: center;
+    }
+.project-img {
+  width: 80px;       /* or any size you want */
+  height: auto;
+  margin-bottom: 1rem;
+  border-radius: 0.75rem; 
+ 
+}
+.project-img-2 {
+  width: 200px;       /* or any size you want */
+  height: auto;
+  margin-bottom: 1rem;
+  border-radius: 0.75rem; 
+ 
+}
+
+    .project-border {
+      position: absolute;
+      padding: 4px; /* ✏️ change this to control border thickness */
+      border-radius: 1.7rem;
+      background: linear-gradient(135deg,#ff179e, #9855fe, #45a0fc); /* ✏️ change gradient here */
+      z-index: 1;
+    }
+
+    .project-card {
+      background: white;
+      border-radius: 1.5rem;
+      width: 100%;
+      height: 100%;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .project-border:hover  {
+      transform: scale(1.05);
+       background: linear-gradient(135deg,#c1ff3c, #55fef8, #45a0fc);
+    }
+
+    .project-card h2 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      color: #2d3436;
+    }
+
+    .project-card p {
+      font-size: 0.95rem;
+      color: #555;
+    }
+      
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* Fixed placements */
+    #project1 { top: 10vh; left: 5vw; background: hsl(0, 0%, 100%); }
+    #project2 { bottom: 10vh; left: 10vw; background: #ffffff; }
+    #project3 { top: 15vh; right: 5vw; background: #ffffff; }
+    #border1 { top: 10vh; left: 5vw; width: 300px; }
+#border2 { bottom: 10vh; left: 10vw; width: 300px; }
+#border3 { top: 15vh; right: 5vw; width: 300px; }
+  </style>
+</head>
+<body>
+
+  <div id="animatedTitle">your<br>surroundings<br>are recording.</div>
+  <div id="description">an archive of sound-based fidget tools.</div>
+
+  <!-- Project Cards -->
+  <a href="../Colour scratcher/index.html">
+     <div class="project-border" id="border1">
+    <div class="project-card" id="project1">
+      <img src="brush.png" alt="Scratch the Colour" class="project-img" />
+      <h2>the walls are singing!</h2>
+      <p>Paint the walls with sound and scratch them to reveal music.</p>
+      
+    </div>
+    </div>
+  </a>
+
+  <a href="../Bang the Table/index.html">
+    <div class="project-border" id="border3">
+    <div class="project-card" id="project3">
+      <img src="table.png"  class="project-img-2" />
+      <h2>memories of the table</h2>
+      <p>Smash and tap to reveal the past memories of a table.</p>
+    </div>
+    </div>
+  </a>
+
+  <a href="../pen clicker/index.html">
+    <div class="project-border" id="border2">
+    <div class="project-card" id="project2">
+       <img src="pen.png"  class="project-img-2" />
+      <h2>pens that speak.</h2>
+      <p>Click the pens for satisfying sounds and rhythm.</p>
+    </div>
+     </div>
+  </a>
+
+  <script>
+    const title = document.getElementById("animatedTitle");
+    const lines = title.innerHTML.split("<br>");
+    title.innerHTML = "";
+
+    const hoverColors = ["#ff179e", "#9855fe", "#45a0fc",  "#c1ff3c", "#55fef8","#45a0fc",]
+
+    // Animate title letters
+    lines.forEach((line) => {
+      const lineDiv = document.createElement("div");
+      const characters = line.split("");
+
+      characters.forEach((char) => {
+        const span = document.createElement("span");
+        span.textContent = char === " " ? "\u00A0" : char;
+        span.style.setProperty('--delay', Math.random() * 3);
+
+        span.addEventListener("mouseenter", () => {
+          const color = hoverColors[Math.floor(Math.random() * hoverColors.length)];
+          span.style.color = color;
+        });
+
+        lineDiv.appendChild(span);
+      });
+
+      title.appendChild(lineDiv);
+    });
+    //checking
+  </script>
+
+</body>
+</html>
