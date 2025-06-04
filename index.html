@@ -72,14 +72,19 @@
       text-align: center;
     }
 .project-img {
-  width: 80px;       /* or any size you want */
+  
+  width: 10vw; /* or 15vw depending on the look you want */
+  max-width: 100px; /* optional cap */
   height: auto;
+
+
   margin-bottom: 1rem;
   border-radius: 0.75rem; 
  
 }
 .project-img-2 {
-  width: 200px;       /* or any size you want */
+  width: 14vw; /* or 15vw depending on the look you want */
+  max-width: 100px; /* optional cap */
   height: auto;
   margin-bottom: 1rem;
   border-radius: 0.75rem; 
@@ -133,6 +138,61 @@
     #border1 { top: 10vh; left: 5vw; width: 300px; }
 #border2 { bottom: 10vh; left: 10vw; width: 300px; }
 #border3 { top: 15vh; right: 5vw; width: 300px; }
+
+/* General responsiveness for smaller screens */
+@media (max-width: 768px) {
+  #animatedTitle {
+    font-size: 3rem; /* Reduce size for smaller screens */
+  }
+
+  .project-img, .project-img-2 {
+    width: 60px;
+  }
+
+  .project-card h2 {
+    font-size: 1rem;
+  }
+
+  .project-card p {
+    font-size: 0.85rem;
+  }
+
+  /* Adjust project cards positioning for smaller screens */
+  #border1, #border2, #border3 {
+   width: 30vw;
+  max-width: 300px; /* keep as cap for big screens */
+    left: auto;
+    right: auto;
+    top: auto;
+    bottom: auto;
+    position: static; /* remove fixed positioning */
+    margin: 1rem auto; /* center align */
+  }
+
+  .project-border {
+    display: block;
+  }
+}
+
+/* Even smaller devices (phones) */
+@media (max-width: 480px) {
+  #animatedTitle {
+    font-size: 2rem;
+  }
+
+  .project-img, .project-img-2 {
+    width: 50px;
+  }
+
+  .project-card h2 {
+    font-size: 0.9rem;
+  }
+
+  .project-card p {
+    font-size: 0.75rem;
+  }
+}
+
   </style>
 </head>
 <body>
