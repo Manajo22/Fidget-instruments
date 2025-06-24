@@ -14,29 +14,42 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-        user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
-    
 
     body {
       background: #ffffff;
-      font-family: "CLT Apfel Grotezk", sans-serif;
-      height: 100vh;
-      overflow: hidden;
+      font-family: "CLT Apfel Grotezk", sans-serif, system-ui, -apple-system;
+      min-height: 100vh;
+      overflow-x: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-direction: column;
       position: relative;
-      user-select: none;
+      padding: 1rem;
+      gap: 2rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1400px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+      position: relative;
+    }
+
+    .title-section {
+      text-align: center;
+      z-index: 10;
     }
 
     #animatedTitle {
-      text-align: center;
-      font-size: 5rem;
-      line-height: 1; /* Tight leading */
-      z-index: 2;
-      position: relative;
+      font-size: clamp(2.5rem, 8vw, 6rem);
+      line-height: 1;
       margin-bottom: 1rem;
     }
 
@@ -51,6 +64,7 @@
       animation: float-blur 3s infinite ease-in-out;
       animation-delay: calc(var(--delay) * 1s);
       transition: color 0.4s ease, filter 0.4s ease, transform 0.4s ease;
+      cursor: pointer;
     }
 
     @keyframes float-blur {
@@ -65,38 +79,69 @@
     }
 
     #description {
-      font-size: 1rem;
+      font-size: clamp(0.9rem, 3vw, 1.1rem);
       color: #666;
-      margin-top: 0.25rem;
-      z-index: 2;
-      text-align: center;
+      margin-top: 0.5rem;
     }
-.project-img {
-  
-  width: 10vw; /* or 15vw depending on the look you want */
-  max-width: 100px; /* optional cap */
-  height: auto;
 
+    .projects-container {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      justify-items: center;
+      align-items: center;
+      max-width: 1000px;
+    }
 
-  margin-bottom: 1rem;
-  border-radius: 0.75rem; 
- 
-}
-.project-img-2 {
-  width: 14vw; /* or 15vw depending on the look you want */
-  max-width: 100px; /* optional cap */
-  height: auto;
-  margin-bottom: 1rem;
-  border-radius: 0.75rem; 
- 
-}
+    /* Desktop fixed positioning - matches original layout */
+    @media (min-width: 1024px) {
+      .projects-container {
+        display: block;
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        max-width: none;
+      }
+
+      .project-link-1 {
+        position: absolute;
+        top: 10vh;
+        left: 5vw;
+        width: 300px;
+      }
+
+      .project-link-2 {
+        position: absolute;
+        bottom: 10vh;
+        left: 10vw;
+        width: 300px;
+      }
+
+      .project-link-3 {
+        position: absolute;
+        top: 15vh;
+        right: 5vw;
+        width: 300px;
+      }
+    }
+
+    .project-img {
+      width: clamp(60px, 15vw, 100px);
+      height: auto;
+      margin-bottom: 1rem;
+      border-radius: 0.75rem;
+    }
 
     .project-border {
-      position: absolute;
-      padding: 4px; /* ✏️ change this to control border thickness */
+      padding: 4px;
       border-radius: 1.7rem;
-      background: linear-gradient(135deg,#ff179e, #9855fe, #45a0fc); /* ✏️ change gradient here */
-      z-index: 1;
+      background: linear-gradient(135deg, #ff179e, #9855fe, #45a0fc);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      width: 100%;
+      max-width: 320px;
+      min-width: 280px;
     }
 
     .project-card {
@@ -108,136 +153,235 @@
       padding: 1.5rem;
       text-align: center;
       transition: transform 0.3s ease;
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
-    .project-border:hover  {
+    .project-border:hover,
+    .project-border:active {
       transform: scale(1.05);
-       background: linear-gradient(135deg,#c1ff3c, #55fef8, #45a0fc);
+      background: linear-gradient(135deg, #c1ff3c, #55fef8, #45a0fc);
     }
 
     .project-card h2 {
-      font-size: 1.2rem;
+      font-size: clamp(1rem, 4vw, 1.3rem);
       margin-bottom: 0.5rem;
       color: #2d3436;
+      font-weight: bold;
     }
 
     .project-card p {
-      font-size: 0.95rem;
+      font-size: clamp(0.85rem, 3vw, 1rem);
       color: #555;
+      line-height: 1.4;
     }
-      
+
     a {
       text-decoration: none;
       color: inherit;
+      width: 100%;
+      max-width: 320px;
     }
 
-    /* Fixed placements */
-    #project1 { top: 10vh; left: 5vw; background: hsl(0, 0%, 100%); }
-    #project2 { bottom: 10vh; left: 10vw; background: #ffffff; }
-    #project3 { top: 15vh; right: 5vw; background: #ffffff; }
-    #border1 { top: 10vh; left: 5vw; width: 300px; }
-#border2 { bottom: 10vh; left: 10vw; width: 300px; }
-#border3 { top: 15vh; right: 5vw; width: 300px; }
+    /* Touch-friendly improvements */
+    @media (hover: none) and (pointer: coarse) {
+      .project-border:active {
+        transform: scale(0.95);
+        transition: transform 0.1s ease;
+      }
+      
+      #animatedTitle span:active {
+        transform: scale(0.95);
+      }
+    }
 
-/* General responsiveness for smaller screens */
-@media (max-width: 768px) {
-  #animatedTitle {
-    font-size: 3rem; /* Reduce size for smaller screens */
-  }
+    /* Desktop layout - maintain original fixed positioning */
+    @media (min-width: 1024px) {
+      body {
+        padding: 0;
+        height: 100vh;
+        overflow: hidden;
+      }
+      
+      .container {
+        width: 100vw;
+        height: 100vh;
+        max-width: none;
+        position: relative;
+      }
+      
+      .title-section {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+      }
+    }
 
-  .project-img, .project-img-2 {
-    width: 60px;
-  }
+    /* Tablet layout - 2 columns */
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .projects-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+      }
+    }
 
-  .project-card h2 {
-    font-size: 1rem;
-  }
+    /* Mobile layout - 1 column */
+    @media (max-width: 767px) {
+      body {
+        padding: 1rem 0.5rem;
+        gap: 1.5rem;
+      }
+      
+      .container {
+        gap: 1.5rem;
+      }
+      
+      .projects-container {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        width: 100%;
+      }
+      
+      .project-border {
+        min-width: auto;
+        width: 100%;
+        max-width: 100%;
+      }
+      
+      a {
+        width: 100%;
+        max-width: 100%;
+      }
+      
+      .project-card {
+        padding: 1.25rem;
+        min-height: 180px;
+      }
+    }
 
-  .project-card p {
-    font-size: 0.85rem;
-  }
+    /* Very small screens */
+    @media (max-width: 480px) {
+      body {
+        padding: 0.5rem;
+      }
+      
+      .project-card {
+        padding: 1rem;
+        min-height: 160px;
+      }
+      
+      .project-img {
+        margin-bottom: 0.75rem;
+      }
+    }
 
-  /* Adjust project cards positioning for smaller screens */
-  #border1, #border2, #border3 {
-   width: 30vw;
-  max-width: 300px; /* keep as cap for big screens */
-    left: auto;
-    right: auto;
-    top: auto;
-    bottom: auto;
-    position: static; /* remove fixed positioning */
-    margin: 1rem auto; /* center align */
-  }
+    /* Landscape orientation adjustments */
+    @media (orientation: landscape) and (max-height: 600px) {
+      body {
+        padding: 1rem;
+        gap: 1rem;
+      }
+      
+      .container {
+        gap: 1rem;
+      }
+      
+      #animatedTitle {
+        font-size: clamp(2rem, 6vw, 4rem);
+      }
+      
+      .projects-container {
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      }
+      
+      .project-card {
+        min-height: 140px;
+        padding: 1rem;
+      }
+    }
 
-  .project-border {
-    display: block;
-  }
-}
+    /* High DPI displays */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      .project-card {
+        box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+      }
+    }
 
-/* Even smaller devices (phones) */
-@media (max-width: 480px) {
-  #animatedTitle {
-    font-size: 2rem;
-  }
+    /* Accessibility improvements */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
 
-  .project-img, .project-img-2 {
-    width: 50px;
-  }
+    /* Focus styles for keyboard navigation */
+    .project-border:focus-within {
+      outline: 3px solid #45a0fc;
+      outline-offset: 2px;
+    }
 
-  .project-card h2 {
-    font-size: 0.9rem;
-  }
-
-  .project-card p {
-    font-size: 0.75rem;
-  }
-}
+    #animatedTitle span:focus {
+      outline: 2px solid #45a0fc;
+      outline-offset: 1px;
+      border-radius: 2px;
+    }
 
   </style>
 </head>
 <body>
+  <div class="container">
+    <div class="title-section">
+      <div id="animatedTitle">your<br>surroundings<br>are recording.</div>
+      <div id="description">an archive of sound-based fidget tools.</div>
+    </div>
 
-  <div id="animatedTitle">your<br>surroundings<br>are recording.</div>
-  <div id="description">an archive of sound-based fidget tools.</div>
+    <div class="projects-container">
+      <a href="Colour scratcher/index.html" class="project-link-1" tabindex="0">
+        <div class="project-border">
+          <div class="project-card">
+            <img src="brush.png" alt="Scratch the Colour" class="project-img" />
+            <h2>the walls are singing!</h2>
+            <p>Paint the walls with sound and scratch them to reveal music.</p>
+          </div>
+        </div>
+      </a>
 
-  <!-- Project Cards -->
-  <a href="Colour scratcher/index.html">
-     <div class="project-border" id="border1">
-    <div class="project-card" id="project1">
-      <img src="brush.png" alt="Scratch the Colour" class="project-img" />
-      <h2>the walls are singing!</h2>
-      <p>Paint the walls with sound and scratch them to reveal music.</p>
-      
-    </div>
-    </div>
-  </a>
+      <a href="pen clicker/index.html" class="project-link-2" tabindex="0">
+        <div class="project-border">
+          <div class="project-card">
+            <img src="pen.png" alt="Pen Clicker" class="project-img" />
+            <h2>pens that speak.</h2>
+            <p>Click the pens for satisfying sounds and rhythm.</p>
+          </div>
+        </div>
+      </a>
 
-  <a href="Bang the Table/index.html">
-    <div class="project-border" id="border3">
-    <div class="project-card" id="project3">
-      <img src="table.png"  class="project-img-2" />
-      <h2>memories of the table</h2>
-      <p>Smash and tap to reveal the past memories of a table.</p>
+      <a href="Bang the Table/index.html" class="project-link-3" tabindex="0">
+        <div class="project-border">
+          <div class="project-card">
+            <img src="table.png" alt="Bang the Table" class="project-img" />
+            <h2>memories of the table</h2>
+            <p>Smash and tap to reveal the past memories of a table.</p>
+          </div>
+        </div>
+      </a>
     </div>
-    </div>
-  </a>
-
-  <a href="pen clicker/index.html">
-    <div class="project-border" id="border2">
-    <div class="project-card" id="project2">
-       <img src="pen.png"  class="project-img-2" />
-      <h2>pens that speak.</h2>
-      <p>Click the pens for satisfying sounds and rhythm.</p>
-    </div>
-     </div>
-  </a>
+  </div>
 
   <script>
     const title = document.getElementById("animatedTitle");
     const lines = title.innerHTML.split("<br>");
     title.innerHTML = "";
 
-    const hoverColors = ["#ff179e", "#9855fe", "#45a0fc",  "#c1ff3c", "#55fef8","#45a0fc",]
+    const hoverColors = ["#ff179e", "#9855fe", "#45a0fc", "#c1ff3c", "#55fef8", "#45a0fc"];
 
     // Animate title letters
     lines.forEach((line) => {
@@ -248,19 +392,74 @@
         const span = document.createElement("span");
         span.textContent = char === " " ? "\u00A0" : char;
         span.style.setProperty('--delay', Math.random() * 3);
+        span.setAttribute('tabindex', '0'); // Make focusable for accessibility
 
-        span.addEventListener("mouseenter", () => {
+        // Handle both hover and touch interactions
+        const changeColor = () => {
           const color = hoverColors[Math.floor(Math.random() * hoverColors.length)];
           span.style.color = color;
+        };
+
+        // Mouse events
+        span.addEventListener("mouseenter", changeColor);
+        
+        // Touch events for mobile
+        span.addEventListener("touchstart", (e) => {
+          e.preventDefault(); // Prevent default touch behavior
+          changeColor();
         });
-//change
+
+        // Keyboard accessibility
+        span.addEventListener("focus", changeColor);
+
         lineDiv.appendChild(span);
       });
 
       title.appendChild(lineDiv);
     });
-    //checking
-  </script>
 
+    // Enhanced touch handling for project cards
+    const projectCards = document.querySelectorAll('.project-border');
+    
+    projectCards.forEach(card => {
+      let touchStartTime = 0;
+      
+      card.addEventListener('touchstart', (e) => {
+        touchStartTime = Date.now();
+        card.style.transform = 'scale(0.95)';
+      });
+      
+      card.addEventListener('touchend', (e) => {
+        const touchDuration = Date.now() - touchStartTime;
+        card.style.transform = 'scale(1)';
+        
+        // If it was a quick tap (less than 200ms), treat as click
+        if (touchDuration < 200) {
+          // The link will naturally handle navigation
+        }
+      });
+      
+      card.addEventListener('touchcancel', () => {
+        card.style.transform = 'scale(1)';
+      });
+    });
+
+    // Prevent double-tap zoom on mobile
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function (event) {
+      const now = (new Date()).getTime();
+      if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, false);
+
+    // Handle orientation changes
+    window.addEventListener('orientationchange', () => {
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+      }, 100);
+    });
+  </script>
 </body>
 </html>

@@ -28,146 +28,242 @@
     }
 
     h1 {
-  position: sticky;
-  top: 0;
-  background: #fff;
-  text-align: center;
-  font-size: 2rem;
-  font-weight: bold;
-  padding: 1rem;
-  margin: 0;
-  z-index: 1001;
-  color: #333;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-   animation: floatTitle 4s ease-in-out infinite;
-  transition: transform 0.3s ease;
-}
+      position: sticky;
+      top: 0;
+      background: #fff;
+      text-align: center;
+      font-size: clamp(1.2rem, 4vw, 2.5rem);
+      font-weight: bold;
+      padding: clamp(0.5rem, 2vw, 1rem);
+      margin: 0;
+      z-index: 1001;
+      color: #333;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      animation: floatTitle 4s ease-in-out infinite;
+      transition: transform 0.3s ease;
+    }
 
-@keyframes floatTitle {
-  0%, 100% {
-    transform: translateY(7px);
-  }
-  50% {
-    transform: translateY(-7px);
-  }
-}
-
-
+    @keyframes floatTitle {
+      0%, 100% {
+        transform: translateY(7px);
+      }
+      50% {
+        transform: translateY(-7px);
+      }
+    }
 
     .pen {
       position: absolute;
-      width: 12vw; /* smaller pens */
-      max-width: 90px;
+      width: clamp(60px, 12vw, 90px);
       height: auto;
       cursor: pointer;
       user-select: none;
       filter: drop-shadow(3px 3px 8px rgba(0,0,0,0.4));
       transition: transform 0.2s ease;
+      /* Enhanced touch targets for mobile */
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Increase touch target size on mobile without affecting visual size */
+    .pen::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      right: -10px;
+      bottom: -10px;
+      z-index: -1;
+    }
+
+    .pen:hover {
+      transform: scale(1.05);
+    }
+
+    .pen:active {
+      transform: scale(0.95);
     }
 
     #throw-btn {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 1rem 2rem;
-  font-family: "CLT Apfel Grotezk";
-  font-size: 2rem;
-  background: linear-gradient(90deg, #ff179e, #9855fe, #45a0fc);
-  color: rgb(0, 0, 0);
-  border: none;
-  border-radius: 80px;
-  cursor: pointer;
-  z-index: 1000;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.4);
-  transition: transform 0.3s ease;
-}
-
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: clamp(0.6rem, 2vw, 1rem) clamp(1rem, 4vw, 2rem);
+      font-family: "CLT Apfel Grotezk";
+      font-size: clamp(1rem, 3vw, 2rem);
+      background: linear-gradient(90deg, #ff179e, #9855fe, #45a0fc);
+      color: rgb(0, 0, 0);
+      border: none;
+      border-radius: 80px;
+      cursor: pointer;
+      z-index: 1000;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.4);
+      transition: transform 0.3s ease;
+      /* Enhanced touch targets */
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      min-width: 44px;
+      min-height: 44px;
+    }
 
     #throw-btn:hover {
-    
       background: linear-gradient(90deg, #c1ff3c, #55fef8, #45a0fc);
       color: rgb(255, 255, 255);
- }
+    }
 
-#index-btn {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  padding: 0.5rem 1rem;
-  background-color: #000000;
-  color: white;
-  text-decoration: none;
-  border-radius: 10px;
-  font-family: "CLT Apfel Grotezk";
-  z-index: 1002;
-  font-size: 1rem;
-  box-shadow: 2px 2px 2px  #ff179e;
-  transition: background-color 0.2s ease;
-   
-}
+    #throw-btn:active {
+      transform: translate(-50%, -50%) scale(0.95);
+    }
 
-#index-btn:hover {
+    #index-btn {
+      position: absolute;
+      top: clamp(0.5rem, 2vw, 1rem);
+      left: clamp(0.5rem, 2vw, 1rem);
+      padding: clamp(0.3rem, 1.3vw, 0.4rem) clamp(0.6rem, 2.2vw, 0.8rem);
+      background-color: #000000;
+      color: white;
+      text-decoration: none;
+      border-radius: 10px;
+      font-family: "CLT Apfel Grotezk";
+      z-index: 1002;
+      font-size: clamp(0.8rem, 2.5vw, 1rem);
+      box-shadow: 2px 2px 2px #ff179e;
+      transition: background-color 0.2s ease;
+      /* Enhanced touch targets */
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      min-width: 60px;
+      min-height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #index-btn:hover {
+      background: linear-gradient(90deg, #ff179e, #9855fe, #45a0fc);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    #index-btn:active {
+      transform: scale(0.95);
+    }
  
-  background: linear-gradient( 90deg,#ff179e, #9855fe, #45a0fc);
-                -webkit-background-clip: text;
-                background-clip: text;
-                color: transparent;
-                
-}
- 
-#prompt {
-  position: fixed;
-  top: 90%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(255,255,255,0.95);
-  padding: 1rem 2rem;
-  border-radius: 20px;
-  font-size: 1vw;
-  font-weight: bold;
-  z-index: 20;
-  animation: fadeOut 2s 2s forwards;
-  text-align: center;
-}
-@keyframes fadeOut {
-  to {
-    opacity: 0;
-    visibility: hidden;
-  }
-}
-    @media (max-width: 768px) {
-      .pen {
-        width: 10vw;
-      }
+    #prompt {
+      position: fixed;
+      top: 90%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255,255,255,0.95);
+      padding: clamp(0.8rem, 3vw, 1rem) clamp(1.5rem, 4vw, 2rem);
+      border-radius: 20px;
+      font-size: clamp(0.9rem, 3vw, 1.2rem);
+      font-weight: bold;
+      z-index: 20;
+      animation: fadeOut 2s 2s forwards;
+      text-align: center;
+      max-width: 90vw;
+      box-sizing: border-box;
+    }
 
-      #throw-btn {
-        font-size: 1.2rem;
-        padding: 0.8rem 1.5rem;
-      }
-
-      h1 {
-        font-size: 1.5rem;
-        padding: 0.7rem;
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        visibility: hidden;
       }
     }
 
+    /* Tablet landscape */
+    @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+      .pen {
+        width: clamp(70px, 10vw, 100px);
+      }
+      
+      h1 {
+        font-size: clamp(1.5rem, 3.5vw, 2rem);
+      }
+    }
+
+    /* Tablet portrait */
+    @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+      .pen {
+        width: clamp(80px, 15vw, 120px);
+      }
+    }
+
+    /* Large mobile landscape */
+    @media (max-width: 767px) and (orientation: landscape) {
+      .pen {
+        width: clamp(50px, 10vw, 80px);
+      }
+      
+      #throw-btn {
+        font-size: clamp(0.9rem, 2.5vw, 1.5rem);
+      }
+      
+      h1 {
+        font-size: clamp(1rem, 3vw, 1.8rem);
+        padding: clamp(0.3rem, 1.5vw, 0.8rem);
+      }
+    }
+
+    /* Mobile portrait */
+    @media (max-width: 767px) and (orientation: portrait) {
+      .pen {
+        width: clamp(30px, 12vw, 75px);
+      }
+      
+      #prompt {
+        font-size: clamp(1rem, 4vw, 1.3rem);
+        padding: clamp(1rem, 4vw, 1.2rem);
+        top: 85%;
+      }
+      #index-btn {
+        font-size: clamp(0.6rem, 3.3vw, 0.7rem);
+        padding: clamp(0.2rem, 1.5vw, 0.3rem) clamp(0.4rem, 2.5vw, 0.6rem);
+      }
+    }
+
+    /* Small mobile screens */
     @media (max-width: 480px) {
       .pen {
-        width: 22vw;
+        width: clamp(20px, 10vw, 68px);
       }
-
-       #prompt {
-    font-size: 5vw;
-    padding: 1rem;
-  }
+      
       #throw-btn {
-        font-size: 1rem;
-        padding: 0.6rem 1rem;
+        font-size: clamp(0.9rem, 4vw, 1.2rem);
+        padding: clamp(0.5rem, 2.5vw, 0.8rem) clamp(1rem, 5vw, 1.5rem);
       }
-
+      
       h1 {
-        font-size: 1.2rem;
+        font-size: clamp(1rem, 5vw, 1.5rem);
+      }
+      
+     #index-btn {
+        font-size: clamp(0.7rem, 3.5vw, 0.8rem);
+        padding: clamp(0.2rem, 1.5vw, 0.3rem) clamp(0.4rem, 2.5vw, 0.6rem);
+      }
+    }
+
+    /* Very small screens */
+    @media (max-width: 320px) {
+      .pen {
+        width: clamp(15px, 8vw, 40px);
+      }
+      
+      #prompt {
+        font-size: clamp(0.8rem, 5vw, 1.1rem);
+        padding: clamp(0.8rem, 4vw, 1rem);
+        top: 80%;
+      }
+    }
+
+    /* High DPI screens */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      .pen {
+        filter: drop-shadow(2px 2px 6px rgba(0,0,0,0.3));
       }
     }
   </style>
@@ -175,7 +271,7 @@
 </head>
 <body>
   <h1>pens that speak.</h1>
-   <div id="prompt">Click them to find out!</div>
+  <div id="prompt">Click them to find out!</div>
   <a href="../index.html" id="index-btn">Home</a>
 
   <button id="throw-btn">Throw!</button>
@@ -204,11 +300,16 @@
 
     loadBuffers();
 
+    // Enhanced touch/click handling for better mobile experience
     pens.forEach((pen, i) => {
       let clicked = false;
       const id = pen.dataset.id;
 
-     pen.addEventListener('click', async () => {
+      // Function to handle pen interaction
+      const handlePenInteraction = async (e) => {
+        // Prevent default touch behavior
+        e.preventDefault();
+        
         await Tone.start();
         clicked = !clicked;
         pen.src = clicked ? `pen-click-${id}.png` : `pen-static-${id}.png`;
@@ -223,10 +324,23 @@
           player.playbackRate = pitches[i];
           player.start();
         }
+      };
+
+      // Add both click and touch event listeners
+      pen.addEventListener('click', handlePenInteraction);
+      pen.addEventListener('touchstart', handlePenInteraction, { passive: false });
+      
+      // Prevent double-firing on devices that support both touch and mouse
+      pen.addEventListener('touchend', (e) => {
+        e.preventDefault();
       });
     });
-//change
-    document.getElementById("throw-btn").addEventListener("click", () => {
+
+    // Enhanced throw button handling
+    const throwBtn = document.getElementById("throw-btn");
+    const handleThrow = (e) => {
+      e.preventDefault();
+      
       pens.forEach(pen => {
         const maxX = window.innerWidth - pen.offsetWidth;
         const maxY = window.innerHeight - pen.offsetHeight;
@@ -236,6 +350,49 @@
         pen.style.left = `${randX}px`;
         pen.style.top = `${randY}px`;
         pen.style.transform = `rotate(${rotation}deg)`;
+      });
+    };
+
+    throwBtn.addEventListener("click", handleThrow);
+    throwBtn.addEventListener("touchstart", handleThrow, { passive: false });
+    
+    // Prevent double-firing
+    throwBtn.addEventListener('touchend', (e) => {
+      e.preventDefault();
+    });
+
+    // Handle orientation changes
+    window.addEventListener('orientationchange', () => {
+      // Small delay to allow for orientation change to complete
+      setTimeout(() => {
+        // Reposition pens if they're outside the new viewport
+        pens.forEach(pen => {
+          const rect = pen.getBoundingClientRect();
+          if (rect.right > window.innerWidth || rect.bottom > window.innerHeight) {
+            const maxX = window.innerWidth - pen.offsetWidth;
+            const maxY = window.innerHeight - pen.offsetHeight;
+            const randX = Math.random() * Math.max(0, maxX);
+            const randY = Math.random() * Math.max(0, maxY);
+            pen.style.left = `${randX}px`;
+            pen.style.top = `${randY}px`;
+          }
+        });
+      }, 100);
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      // Reposition pens if they're outside the new viewport
+      pens.forEach(pen => {
+        const rect = pen.getBoundingClientRect();
+        if (rect.right > window.innerWidth || rect.bottom > window.innerHeight) {
+          const maxX = window.innerWidth - pen.offsetWidth;
+          const maxY = window.innerHeight - pen.offsetHeight;
+          const newX = Math.min(parseInt(pen.style.left) || 0, Math.max(0, maxX));
+          const newY = Math.min(parseInt(pen.style.top) || 0, Math.max(0, maxY));
+          pen.style.left = `${newX}px`;
+          pen.style.top = `${newY}px`;
+        }
       });
     });
   </script>

@@ -29,7 +29,7 @@
   font-family: "CLT Apfel Grotezk";
   text-align: center;
   background: white;
-  font-size: 2vw;
+  font-size: clamp(18px, 2vw, 32px);
   font-weight: bold;
   padding: 0.9rem;
   z-index: 10;
@@ -54,7 +54,7 @@
   background: rgba(255,255,255,0.95);
   padding: 1rem 2rem;
   border-radius: 20px;
-  font-size: 1vw;
+  font-size: clamp(12px, 1vw, 16px);
   font-weight: bold;
   z-index: 20;
   animation: fadeOut 2s 2s forwards;
@@ -68,7 +68,7 @@
   }
 }
     .arrow {
-      font-size: 3vw;
+      font-size: clamp(24px, 3vw, 48px);
       cursor: pointer;
       margin-top: 40px;
       animation: bounce 1.2s infinite;
@@ -83,7 +83,7 @@
   width: 100vw;
   height: 100vh;
   background: url('images/table.png') no-repeat center center;
-  background-size: 150%;
+  background-size: cover;
   background-color: #ffffff;
   overflow: hidden;
   margin: 0;
@@ -93,13 +93,15 @@
 
 .hand {
   position: absolute;
-  height: 150vh;
-  bottom: -60vh; /* This hides the bottom part */
+  height: 200vh;
+  bottom: -100vh; /* This hides the bottom part */
   z-index: 10;
   transition: transform 0.1s ease;
   cursor: pointer;
   transform-origin: bottom center;
   pointer-events: auto;
+  max-height: 200vh;
+  object-fit: contain;
 }
 
 .hand.left { left: 10vw; }
@@ -126,14 +128,14 @@
   position: fixed;
   top: 80px; /* Below the page header */
   right: 5vw;
-  padding: 10px 20px;
+  padding: clamp(8px, 1vw, 15px) clamp(12px, 2vw, 20px);
   background: linear-gradient(90deg, #ff179e, #9855fe, #45a0fc);
   color: #000000;
   border: none;
   border-radius: 100px;
   font-family: "CLT Apfel Grotezk", sans-serif;
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: clamp(12px, 1.2rem, 18px);
   
   z-index: 99;
   cursor: pointer;
@@ -172,7 +174,7 @@
 .page-header h1 {
   margin: 0;
   font-family: "CLT Apfel Grotezk", sans-serif;
-  font-size: 28px;
+  font-size: clamp(20px, 28px, 32px);
   color: #111;
 }
 
@@ -180,14 +182,14 @@
   position: absolute;
   top: 1rem;
   left: 1rem;
-  padding: 0.5rem 1rem;
+  padding: clamp(0.4rem, 0.5rem, 0.6rem) clamp(0.8rem, 1rem, 1.2rem);
   background-color: #000000;
   color: white;
   text-decoration: none;
   border-radius: 10px;
   font-family: "CLT Apfel Grotezk";
   z-index: 1002;
-  font-size: 1rem;
+  font-size: clamp(12px, 1rem, 16px);
   box-shadow: 2px 2px 2px  #ff179e;
   transition: background-color 0.2s ease;
 }
@@ -200,71 +202,191 @@
                 color: transparent;
                 border-color: #ff179e;
 }
- 
-  @media (max-width: 768px) {
-    .intro h1 {
-      font-size: 6vw;
-    }
 
-    .arrow {
-      font-size: 6vw;
-    }
-
-    .select-toggle {
-      font-size: 16px;
-      padding: 8px 16px;
-      top: 10px;
-      right: 10px;
-    }
-
-    .hand {
-      height: 100vh;
-    }
-
-    .container {
-      width: 100vw;
-      height: 100vh;
-      background-size: contain;
-    }
+/* Tablet and small desktop */
+@media screen and (max-width: 1024px) and (min-width: 769px) {
+  .container {
+    background-size: contain;
   }
-
-  @media (max-width: 480px) {
-    .intro h1 {
-      font-size: 7vw;
-    }
-
-    .arrow {
-      font-size: 8vw;
-    }
-#title{
-  font-size: 6vw;
-}
-    .select-toggle {
-      font-size: 14px;
-      padding: 6px 12px;
-    }
-#title {
-    font-size: 6vw;
+  
+  .hand {
+    height: 90vh;
+    bottom: -25vh;
   }
-    .hand {
-      height: 80vh;
-    }
-  }
-@media (max-width: 768px) {
+  
   .select-toggle {
-    font-size: 1rem;
-    padding: 8px 16px;
-    top: 70px;
+    top: 75px;
     right: 4vw;
   }
 }
 
-@media (max-width: 480px) {
+/* Tablet portrait */
+@media screen and (max-width: 768px) and (min-width: 481px) {
+  #title {
+    font-size: clamp(20px, 4vw, 28px);
+    padding: 0.7rem;
+  }
+
+  .arrow {
+    font-size: clamp(28px, 5vw, 40px);
+  }
+
   .select-toggle {
-    font-size: 0.9rem;
-    padding: 6px 12px;
+    font-size: clamp(14px, 2.5vw, 18px);
+    padding: clamp(6px, 1.5vw, 12px) clamp(10px, 2.5vw, 16px);
+    top: 70px;
+    right: 4vw;
+  }
+
+  .hand {
+    height: 80vh;
+    bottom: -20vh;
+  }
+  
+  .hand.left { left: 8vw; }
+  .hand.right { right: 8vw; }
+
+  .container {
+    background-size: contain;
+  }
+  
+  #index-btn {
+    font-size: clamp(12px, 2.5vw, 16px);
+    padding: clamp(0.3rem, 0.8vw, 0.5rem) clamp(0.6rem, 1.5vw, 1rem);
+  }
+}
+
+/* Mobile landscape */
+@media screen and (max-width: 768px) and (orientation: landscape) {
+  .hand {
+    height: 70vh;
+    bottom: -15vh;
+  }
+  
+  #title {
+    font-size: clamp(16px, 3vw, 24px);
+    padding: 0.5rem;
+  }
+  
+  .select-toggle {
+    top: 60px;
+    font-size: clamp(12px, 2vw, 16px);
+  }
+}
+
+/* Mobile portrait */
+@media screen and (max-width: 480px) {
+  #title {
+    font-size: clamp(18px, 6vw, 28px);
+    padding: 0.6rem;
+  }
+
+  .arrow {
+    font-size: clamp(32px, 8vw, 48px);
+  }
+
+  .select-toggle {
+    font-size: clamp(12px, 3vw, 16px);
+    padding: clamp(6px, 1.5vw, 10px) clamp(8px, 2vw, 12px);
     top: 65px;
     right: 3vw;
+    max-width: 85vw;
+  }
+
+  .hand {
+    height: 70vh;
+    bottom: -15vh;
+  }
+  
+  .hand.left { left: 5vw; }
+  .hand.right { right: 5vw; }
+  
+  .container {
+    background-size: cover;
+  }
+  
+  #index-btn {
+    font-size: clamp(10px, 3vw, 14px);
+    padding: clamp(0.5rem, 1.3vw, 0.6rem) clamp(1rem, 1vw, 1.5rem);
+    top: 0.7rem;
+    left: 1rem;
+  }
+  
+  #prompt {
+    font-size: clamp(14px, 2.5vw, 16px);
+    padding: 0.8rem 1.5rem;
+  }
+}
+
+/* Extra small screens */
+@media screen and (max-width: 320px) {
+  #title {
+    font-size: clamp(16px, 7vw, 24px);
+    padding: 0.5rem;
+  }
+
+  .select-toggle {
+    font-size: clamp(10px, 3.5vw, 14px);
+    padding: 5px 8px;
+    top: 60px;
+    right: 2vw;
+    max-width: 80vw;
+  }
+
+  .hand {
+    height: 60vh;
+    bottom: -10vh;
+  }
+  
+  .hand.left { left: 3vw; }
+  .hand.right { right: 3vw; }
+  
+  #index-btn {
+    font-size: clamp(9px, 3.5vw, 12px);
+    padding: 0.25rem 0.5rem;
+    top: 0.5rem;
+    left: 0.5rem;
+  }
+}
+
+/* Very wide screens */
+@media screen and (min-width: 1200px) {
+  .container {
+    background-size: 120%;
+  }
+  
+  .hand {
+    height: 110vh;
+    bottom: -35vh;
+  }
+  
+  .select-toggle {
+    font-size: 18px;
+    padding: 12px 24px;
+  }
+  
+  #title {
+    font-size: 36px;
+  }
+}
+
+/* Ultra wide screens */
+@media screen and (min-width: 1600px) {
+  .container {
+    background-size: 100%;
+  }
+  
+  .hand {
+    height: 120vh;
+    bottom: -40vh;
+  }
+}
+
+/* High DPI screens */
+@media screen and (-webkit-min-device-pixel-ratio: 2), 
+       screen and (min-resolution: 192dpi) {
+  .container {
+    background-size: cover;
   }
 }
 
@@ -320,7 +442,7 @@
     bangSounds.forEach(sound => sound.load());
 
     function resetHandPosition(hand) {
-     hand.style.bottom = '-60vh';  // hides lower half
+     hand.style.bottom = '-30vh';  // hides lower half but keeps top visible
     
       hand.style.transform = 'rotate(0deg)';
       if (hand.id === 'leftHand') {
